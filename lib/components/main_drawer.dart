@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:split_helper/config/routes.dart';
 import 'package:split_helper/core/services/auth/auth_service_interface.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -20,7 +21,7 @@ class MainDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Settings'),
             onTap: () {
-              // TODO Settings Drawer Button
+              Navigator.pushNamed(context, Routes.settings);
             },
           ),
           ListTile(

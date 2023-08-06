@@ -21,7 +21,6 @@ class _SplitPageState extends State<SplitPage> {
 
   @override
   void dispose() {
-    // disposing states
     _scaffoldKey.currentState?.dispose();
     super.dispose();
   }
@@ -30,7 +29,10 @@ class _SplitPageState extends State<SplitPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: const Text('Split Helper'),
+          centerTitle: true,
+        ),
         key: _scaffoldKey,
         drawer: const MainDrawer(),
         body: RefreshIndicator(

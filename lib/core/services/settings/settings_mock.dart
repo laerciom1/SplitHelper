@@ -1367,5 +1367,6 @@ const mockedSettings = {
       "imageUrl":
           "https://s3.amazonaws.com/splitwise/uploads/category/icon/square_v2/home/electronics@2x.png"
     }
-  ]
+  ],
+  "shareConfig": 85,
 };
