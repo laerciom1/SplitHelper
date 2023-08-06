@@ -22,7 +22,7 @@ class _AuthPageState extends State<AuthPage> {
         await IAuthService().signUp(data.email!, data.password!);
       }
     } catch (err) {
-      // TODO
+      // TODO SignIn/Up Error Handle
     } finally {
       setState(() => _isLoading = false);
     }

@@ -1,3 +1,4 @@
+import 'package:split_helper/core/models/settings_data.dart';
 import 'package:split_helper/core/models/split_data.dart';
 
 parseSplit(jsonSplit) {
@@ -10,12 +11,13 @@ parseSplit(jsonSplit) {
           ))
       .toList();
   final split = SplitData(
-      id: jsonSplit['id'] as int,
-      description: jsonSplit['description'] as String,
-      cost: double.parse(jsonSplit['cost'] as String).toStringAsFixed(2),
-      date: jsonSplit['date'] as String,
-      users: users,
-      categoryId: jsonSplit['category']['id'] as int);
+    id: jsonSplit['id'] as int,
+    description: jsonSplit['description'] as String,
+    cost: double.parse(jsonSplit['cost'] as String).toStringAsFixed(2),
+    date: jsonSplit['date'] as String,
+    users: users,
+    category: Category.fromId((jsonSplit['category']['id'] as int)),
+  );
   return split;
 }
 

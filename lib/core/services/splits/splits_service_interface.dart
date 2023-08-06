@@ -1,3 +1,4 @@
+import 'package:split_helper/core/models/settings_data.dart';
 import 'package:split_helper/core/models/split_data.dart';
 import 'package:split_helper/core/services/splits/splits_service_mock_impl.dart';
 
@@ -21,7 +22,7 @@ abstract class ISplitsService {
   Future<SplitData> save({
     required double cost,
     required String description,
-    required int categoryId,
+    required Category category,
     required int groupId, // Firebase
     required List<UserSplitData> shares, // Id do Firebase e Valores do Input
     // DateTime date, // NOW

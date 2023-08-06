@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:async';
+import 'package:split_helper/core/models/settings_data.dart';
 import 'package:split_helper/core/models/split_data.dart';
 import 'package:split_helper/core/services/splits/splits_mock.dart';
 import 'package:split_helper/core/services/splits/splits_service_interface.dart';
@@ -21,7 +22,7 @@ class SplitsServiceMock implements ISplitsService {
   Future<SplitData> save({
     required double cost,
     required String description,
-    required int categoryId,
+    required Category category,
     required int groupId,
     required List<UserSplitData> shares,
   }) async {
@@ -31,7 +32,7 @@ class SplitsServiceMock implements ISplitsService {
       cost: cost.toStringAsFixed(2),
       date: DateTime.now().toIso8601String(),
       users: shares,
-      categoryId: categoryId,
+      category: category,
     );
     _splits.add(split);
     _controller?.add(_splits);
