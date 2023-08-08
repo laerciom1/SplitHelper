@@ -67,20 +67,17 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               const Text('Share % Config'),
               Text(
-                'Chico: ${_settings!.shareConfig} | Dai ${100 - _settings!.shareConfig!}',
+                '${_settings!.shareConfig}/${100 - _settings!.shareConfig!}',
               ),
             ],
           ),
-          Column(
-            children: [
-              Slider.adaptive(
-                  value: (_settings!.shareConfig! / 100),
-                  onChanged: (value) {
-                    setState(() {
-                      _settings!.shareConfig = (value * 100).toInt();
-                    });
-                  }),
-            ],
+          Slider.adaptive(
+            value: (_settings!.shareConfig! / 100),
+            onChanged: (value) {
+              setState(() {
+                _settings!.shareConfig = (value * 100).toInt();
+              });
+            },
           ),
         ],
       );
@@ -104,6 +101,7 @@ class _SettingsPageState extends State<SettingsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Categories Config'),
+          const SizedBox(height: 12),
           SizedBox(
             height: MediaQuery.of(context).size.height * .58,
             child: GridView.count(

@@ -75,12 +75,6 @@ class Split extends StatelessWidget {
               )
             ],
           ),
-          // Text(
-          //   '${split.users[0].userId} - ${split.users[0].owedShare} - ${split.users[0].paidShare} - ${split.users[0].balance}',
-          // ),
-          // Text(
-          //   '${split.users[1].userId} - ${split.users[1].owedShare} - ${split.users[1].paidShare} - ${split.users[1].balance}',
-          // ),
         ],
       ),
     );

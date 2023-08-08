@@ -48,3 +48,4 @@ macos/Runner/GoogleService-Info.plist
 ios/firebase_app_id_file.json
 ios/Runner/GoogleService-Info.plist
 android/app/google-services.json
+pubspec.lock

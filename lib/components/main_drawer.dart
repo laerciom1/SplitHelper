@@ -21,7 +21,7 @@ class MainDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Settings'),
             onTap: () {
-              Navigator.pushNamed(context, Routes.settings);
+              Navigator.popAndPushNamed(context, Routes.settings);
             },
           ),
           ListTile(

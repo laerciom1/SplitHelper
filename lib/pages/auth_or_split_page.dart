@@ -10,8 +10,8 @@ class AuthOrSplitPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<AuthData?>(
+    return SafeArea(
+      child: StreamBuilder<AuthData?>(
         stream: IAuthService().userChanges,
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
