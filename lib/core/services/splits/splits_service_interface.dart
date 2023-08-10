@@ -23,8 +23,9 @@ abstract class ISplitsService {
     required double cost,
     required String description,
     required Category category,
-    required int groupId, // Firebase
-    required List<UserSplitData> shares, // Id do Firebase e Valores do Input
+    required int shareConfig,
+    int? groupId, // Firebase
+    List<UserSplitData>? shares, // Id do Firebase e Valores do Input
     // DateTime date, // NOW
     // String currencyCode, // BRL
   });

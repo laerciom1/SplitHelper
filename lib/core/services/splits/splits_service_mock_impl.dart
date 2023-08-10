@@ -5,6 +5,8 @@ import 'package:split_helper/core/models/split_data.dart';
 import 'package:split_helper/core/services/splits/splits_mock.dart';
 import 'package:split_helper/core/services/splits/splits_service_interface.dart';
 
+const duration = Duration(seconds: 2);
+
 class SplitsServiceMock implements ISplitsService {
   static List<SplitData> _splits = [...mockedSplitsData];
   static MultiStreamController<List<SplitData>>? _controller;
@@ -23,27 +25,35 @@ class SplitsServiceMock implements ISplitsService {
     required double cost,
     required String description,
     required Category category,
-    required int groupId,
-    required List<UserSplitData> shares,
+    required int shareConfig,
+    int? groupId,
+    List<UserSplitData>? shares,
   }) async {
-    final split = SplitData(
-      id: Random().nextInt(24),
-      description: description,
-      cost: cost.toStringAsFixed(2),
-      date: DateTime.now().toIso8601String(),
-      users: shares,
-      category: category,
-    );
-    _splits.add(split);
-    _controller?.add(_splits);
-    return split;
+    return Future.delayed(duration, () {
+      final user0 = UserSplitData(owedShare: cost * (shareConfig / 100));
+      final user1 =
+          UserSplitData(owedShare: cost * ((100 - shareConfig) / 100));
+      final split = SplitData(
+        id: Random().nextInt(24),
+        description: description,
+        cost: cost.toStringAsFixed(2),
+        date: DateTime.now().toIso8601String(),
+        users: shares ?? [user0, user1],
+        category: category,
+      );
+      _splits.add(split);
+      _controller?.add(_splits);
+      return split;
+    });
   }
 
   @override
   Future<void> updateSplits() async {
-    final splits = [..._splits, _splits[0]];
-    splits.removeAt(0);
-    _splits = [...splits];
-    _controller?.add(splits);
+    return Future.delayed(duration, () {
+      final splits = [..._splits, _splits[0]];
+      splits.removeAt(0);
+      _splits = [...splits];
+      _controller?.add(splits);
+    });
   }
 }

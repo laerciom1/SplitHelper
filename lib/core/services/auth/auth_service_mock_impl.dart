@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:split_helper/core/models/auth_data.dart';
 import 'package:split_helper/core/services/auth/auth_service_interface.dart';
 
+const duration = Duration(seconds: 2);
+
 class AuthServiceMock implements IAuthService {
   static final Map<String, AuthData> _users = {
     'f.laerciom@gmail.com': AuthData('f.laerciom@gmail.com', '123456')
@@ -22,19 +24,25 @@ class AuthServiceMock implements IAuthService {
 
   @override
   Future<void> logout() async {
-    _updateUser(null);
+    return Future.delayed(duration, () {
+      _updateUser(null);
+    });
   }
 
   @override
   Future<void> signIn(String email, String password) async {
-    _updateUser(_users[email]);
+    return Future.delayed(duration, () {
+      _updateUser(_users[email]);
+    });
   }
 
   @override
   Future<void> signUp(String email, String password) async {
-    final newUser = AuthData(email, password);
-    _users.putIfAbsent(email, () => newUser);
-    _updateUser(newUser);
+    return Future.delayed(duration, () {
+      final newUser = AuthData(email, password);
+      _users.putIfAbsent(email, () => newUser);
+      _updateUser(newUser);
+    });
   }
 
   static _updateUser(AuthData? user) {

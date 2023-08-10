@@ -3,6 +3,8 @@ import 'package:split_helper/core/models/settings_data.dart';
 import 'package:split_helper/core/services/settings/settings_mock.dart';
 import 'package:split_helper/core/services/settings/settings_service_interface.dart';
 
+const duration = Duration(seconds: 2);
+
 class SettingsServiceMock implements ISettingsService {
   static Settings _settings = Settings.fromJson(mockedSettings);
   static MultiStreamController<Settings>? _controller;
@@ -18,8 +20,10 @@ class SettingsServiceMock implements ISettingsService {
 
   @override
   Future<Settings> update({required Settings settings}) async {
-    _settings = settings;
-    _controller?.add(_settings);
-    return _settings;
+    return Future.delayed(duration, () {
+      _settings = settings;
+      _controller?.add(_settings);
+      return _settings;
+    });
   }
 }
