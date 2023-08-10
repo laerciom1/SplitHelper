@@ -6,11 +6,11 @@ class AddSplitFAB extends StatelessWidget {
   const AddSplitFAB({
     super.key,
     required this.settings,
-    required this.onTapAddSplit,
+    required this.onSelectCategory,
   });
 
   final Settings settings;
-  final void Function(Category) onTapAddSplit;
+  final void Function(Category) onSelectCategory;
 
   List<SpeedDialChild> getCategoriesDialButtons(context) =>
       settings.myCategories!
@@ -31,7 +31,7 @@ class AddSplitFAB extends StatelessWidget {
                 fontSize: 12,
               ),
               onTap: () {
-                onTapAddSplit(category);
+                onSelectCategory(category);
               },
             ),
           )

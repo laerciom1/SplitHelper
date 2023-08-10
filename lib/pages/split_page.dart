@@ -39,7 +39,16 @@ class _SplitPageState extends State<SplitPage> {
     super.dispose();
   }
 
-  onTapAddSplit(Category category) {
+  onAddSplit(
+    Category category,
+    String description,
+    double cost,
+    int shareConfig,
+  ) {
+    // TODO Add Split
+  }
+
+  onSelectCategory(Category category) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -47,7 +56,7 @@ class _SplitPageState extends State<SplitPage> {
         return AddSplitBS(
           category: category,
           initialShareConfig: shareConfig,
-          onApply: () {},
+          onApply: onAddSplit,
         );
       },
     );
@@ -65,7 +74,7 @@ class _SplitPageState extends State<SplitPage> {
       floatingActionButton: _settings != null
           ? AddSplitFAB(
               settings: _settings!,
-              onTapAddSplit: onTapAddSplit,
+              onSelectCategory: onSelectCategory,
             )
           : null,
       body: RefreshIndicator(
