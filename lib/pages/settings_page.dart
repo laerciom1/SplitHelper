@@ -140,7 +140,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   onTapAddCategory() {
-    // TODO Add Category Flow
+    // TODO Make "Add Category" flow
     Navigator.of(context).pop();
   }
 

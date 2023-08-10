@@ -18,6 +18,7 @@ class _SplitPageState extends State<SplitPage> {
   late final GlobalKey<ScaffoldState> _scaffoldKey;
   Settings? _settings;
   int shareConfig = 0;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -44,8 +45,19 @@ class _SplitPageState extends State<SplitPage> {
     String description,
     double cost,
     int shareConfig,
-  ) {
-    // TODO Add Split
+  ) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await ISplitsService().save(
+      category: category,
+      cost: cost,
+      description: description,
+      shareConfig: shareConfig,
+    );
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   onSelectCategory(Category category) {
@@ -64,59 +76,77 @@ class _SplitPageState extends State<SplitPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Split Helper'),
-        centerTitle: true,
-      ),
-      key: _scaffoldKey,
-      drawer: const MainDrawer(),
-      floatingActionButton: _settings != null
-          ? AddSplitFAB(
-              settings: _settings!,
-              onSelectCategory: onSelectCategory,
-            )
-          : null,
-      body: RefreshIndicator(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: const Text('Split Helper'),
+            centerTitle: true,
+          ),
+          key: _scaffoldKey,
+          drawer: const MainDrawer(),
+          floatingActionButton: _settings != null
+              ? AddSplitFAB(
+                  settings: _settings!,
+                  onSelectCategory: onSelectCategory,
+                )
+              : null,
+          body: Stack(
             children: [
-              Expanded(
-                child: StreamBuilder<List<SplitData>>(
-                  stream: ISplitsService().getSplits(),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: Theme.of(context).indicatorColor,
+              RefreshIndicator(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: StreamBuilder<List<SplitData>>(
+                          stream: ISplitsService().getSplits(),
+                          builder: (ctx, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).indicatorColor,
+                                ),
+                              );
+                            }
+                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(
+                                child: Text('Sem dados...'),
+                              );
+                            }
+                            final splits = snapshot.data!;
+                            return ListView.builder(
+                              itemCount: splits.length,
+                              itemBuilder: (ctx, i) => Split(
+                                key: ValueKey(splits[i].id),
+                                split: splits[i],
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    }
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(
-                        child: Text('Sem dados...'),
-                      );
-                    }
-                    final splits = snapshot.data!;
-                    return ListView.builder(
-                      itemCount: splits.length,
-                      itemBuilder: (ctx, i) => Split(
-                        key: ValueKey(splits[i].id),
-                        split: splits[i],
-                      ),
-                    );
-                  },
+                      )
+                    ],
+                  ),
                 ),
-              )
+                onRefresh: () {
+                  return ISplitsService().updateSplits();
+                },
+              ),
             ],
           ),
         ),
-        onRefresh: () {
-          return ISplitsService().updateSplits();
-        },
-      ),
+        if (_isLoading)
+          Container(
+            color: Colors.black54,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).indicatorColor,
+              ),
+            ),
+          )
+      ],
     );
   }
 }
