@@ -4,6 +4,7 @@ import 'package:json_theme/json_theme.dart';
 
 import 'package:flutter/services.dart';
 import 'package:split_helper/config/routes.dart';
+import 'package:split_helper/core/services/config/config_service_interface.dart';
 import 'dart:convert';
 
 import 'package:split_helper/pages/auth_or_split_page.dart';
@@ -12,6 +13,7 @@ import 'package:split_helper/pages/settings_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await IConfigService().getSplitWiseConfig();
   final themeStr = await rootBundle.loadString('assets/appainter_theme.json');
   final themeJson = jsonDecode(themeStr);
   final theme = ThemeDecoder.decodeThemeData(themeJson)!;

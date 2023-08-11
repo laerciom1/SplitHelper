@@ -1,5 +1,6 @@
 import 'package:split_helper/core/models/auth_data.dart';
-import 'package:split_helper/core/services/auth/auth_service_mock_impl.dart';
+import 'package:split_helper/core/services/auth/auth_service_firebase_impl.dart';
+// import 'package:split_helper/core/services/auth/auth_service_mock_impl.dart';
 
 abstract class IAuthService {
   AuthData? get currentUser;
@@ -10,6 +11,6 @@ abstract class IAuthService {
   Future<void> logout();
 
   factory IAuthService() {
-    return AuthServiceMock();
+    return AuthServiceFirebase();
   }
 }

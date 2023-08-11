@@ -7,7 +7,10 @@ const duration = Duration(seconds: 2);
 
 class AuthServiceMock implements IAuthService {
   static final Map<String, AuthData> _users = {
-    'f.laerciom@gmail.com': AuthData('f.laerciom@gmail.com', '123456')
+    'f.laerciom@gmail.com': AuthData(
+      email: 'f.laerciom@gmail.com',
+      password: '123456',
+    ),
   };
   static AuthData? _currentUser;
   static MultiStreamController<AuthData?>? _controller;
@@ -39,7 +42,7 @@ class AuthServiceMock implements IAuthService {
   @override
   Future<void> signUp(String email, String password) async {
     return Future.delayed(duration, () {
-      final newUser = AuthData(email, password);
+      final newUser = AuthData(email: email, password: password);
       _users.putIfAbsent(email, () => newUser);
       _updateUser(newUser);
     });
