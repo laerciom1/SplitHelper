@@ -30,18 +30,27 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  splitwise_api: ^2.0.3
-  firebase_core: ^2.15.0
-  cupertino_icons: ^1.0.2
-  firebase_database: ^10.2.4
-  firebase_auth: ^4.7.2
-  json_theme: ^6.1.0
+  json_theme: ^6.2.0
   flutter_speed_dial: ^7.0.0
   cloud_firestore: ^4.8.4
+  firebase_auth: ^4.7.2
+  firebase_core: ^2.15.0
+  firebase_database: ^10.2.4
+  flutter_secure_storage: ^8.0.0
+  dartz: ^0.10.1
+  dio: ^5.3.2
+  flutter_hooks: ^0.20.0
+  hooks_riverpod: ^2.3.7
+  freezed_annotation: ^2.4.1
+  webview_flutter: ^4.2.2
+  flash: ^3.0.5+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^2.4.6
+  freezed: ^2.4.2
+  lint: ^2.1.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
