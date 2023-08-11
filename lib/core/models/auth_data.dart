@@ -1,8 +1,8 @@
 class AuthData {
-  String? email = '';
+  String email = '';
   String? password = '';
 
-  AuthData(this.email, this.password);
+  AuthData({required this.email, this.password});
   AuthData.empty() {
     email = '';
     password = '';

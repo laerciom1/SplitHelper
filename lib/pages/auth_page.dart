@@ -17,9 +17,9 @@ class _AuthPageState extends State<AuthPage> {
     try {
       setState(() => _isLoading = true);
       if (mode == AuthMode.signIn) {
-        await IAuthService().signIn(data.email!, data.password!);
+        await IAuthService().signIn(data.email, data.password!);
       } else {
-        await IAuthService().signUp(data.email!, data.password!);
+        await IAuthService().signUp(data.email, data.password!);
       }
     } catch (err) {
       // TODO SignIn/Up Error Handle

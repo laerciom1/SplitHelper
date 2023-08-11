@@ -1317,7 +1317,7 @@ const mockedSplitCategoriesData = {
   ]
 };
 
-const mockedSettings = {
+const mockedUserPreferences = {
   "myCategories": [
     {
       "id": 3,

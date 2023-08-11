@@ -14,7 +14,7 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   AuthMode _mode = AuthMode.signIn;
   final _formKey = GlobalKey<FormState>();
-  final _authData = AuthData('f.laerciom@gmail.com', '123456');
+  final _authData = AuthData(email: 'f.laerciom@gmail.com', password: '123456');
 
   _toggleAuthMode() {
     setState(() {

@@ -5,7 +5,7 @@ import 'package:split_helper/components/main_drawer.dart';
 import 'package:split_helper/components/split.dart';
 import 'package:split_helper/core/models/settings_data.dart';
 import 'package:split_helper/core/models/split_data.dart';
-import 'package:split_helper/core/services/settings/settings_service_interface.dart';
+import 'package:split_helper/core/services/user_preferences/user_preferences_service_interface.dart';
 import 'package:split_helper/core/services/splits/splits_service_interface.dart';
 
 class SplitPage extends StatefulWidget {
@@ -23,7 +23,7 @@ class _SplitPageState extends State<SplitPage> {
   @override
   void initState() {
     _scaffoldKey = GlobalKey();
-    ISettingsService().get().listen((event) {
+    IUserPreferencesService().get().listen((event) {
       setState(() {
         _settings = event;
         if (_settings != null) {

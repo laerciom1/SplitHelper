@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:split_helper/core/models/settings_data.dart';
-import 'package:split_helper/core/services/settings/settings_mock.dart';
-import 'package:split_helper/core/services/settings/settings_service_interface.dart';
+import 'package:split_helper/core/services/user_preferences/user_preferences_mock.dart';
+import 'package:split_helper/core/services/user_preferences/user_preferences_service_interface.dart';
 
 const duration = Duration(seconds: 2);
 
-class SettingsServiceMock implements ISettingsService {
-  static Settings _settings = Settings.fromJson(mockedSettings);
+class UserPreferencesServiceMock implements IUserPreferencesService {
+  static Settings _settings = Settings.fromJson(mockedUserPreferences);
   static MultiStreamController<Settings>? _controller;
   static final _settingsStream = Stream<Settings>.multi((controller) {
     _controller = controller;

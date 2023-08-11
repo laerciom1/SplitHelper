@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:split_helper/core/models/settings_data.dart';
-import 'package:split_helper/core/services/settings/settings_service_interface.dart';
+import 'package:split_helper/core/services/user_preferences/user_preferences_service_interface.dart';
 
 getCategoryCard(Category category) {
   return Card(
@@ -43,7 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     _scaffoldKey = GlobalKey();
-    ISettingsService().get().listen((event) {
+    IUserPreferencesService().get().listen((event) {
       setState(() {
         _settings = event;
       });
