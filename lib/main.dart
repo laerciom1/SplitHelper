@@ -1,40 +1,20 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:json_theme/json_theme.dart';
-
-import 'package:flutter/services.dart';
-import 'package:split_helper/config/routes.dart';
-import 'package:split_helper/core/services/config/config_service_interface.dart';
 import 'dart:convert';
 
-import 'package:split_helper/pages/auth_or_split_page.dart';
-import 'package:split_helper/pages/settings_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:json_theme/json_theme.dart';
+import 'package:split_helper/core/presentation/widgets/app_widget.dart';
+// import 'package:split_helper/oldFoldStructure/core/services/config/config_service_interface.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await IConfigService().getSplitWiseConfig();
+  // await IConfigService().getSplitWiseConfig();
   final themeStr = await rootBundle.loadString('assets/appainter_theme.json');
   final themeJson = jsonDecode(themeStr);
   final theme = ThemeDecoder.decodeThemeData(themeJson)!;
 
-  runApp(MyApp(theme: theme));
-}
-
-class MyApp extends StatelessWidget {
-  final ThemeData theme;
-
-  const MyApp({Key? key, required this.theme}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: theme,
-      debugShowCheckedModeBanner: false,
-      routes: {
-        Routes.settings: (_) => const SettingsPage(),
-        Routes.splits: (_) => const AuthOrSplitPage(),
-      },
-    );
-  }
+  runApp(ProviderScope(child: SplitHelper(theme: theme)));
 }
