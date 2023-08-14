@@ -1,13 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:split_helper/features/auth/infra/credentials_storage/secure_credentials_storage.dart';
+import 'package:split_helper/core/application/config_notifier.dart';
+import 'package:split_helper/core/infra/storage.dart';
 
 final flutterSecureStorageProvider =
     Provider((ref) => const FlutterSecureStorage());
 
 final dioProvider = Provider((ref) => Dio());
 
-final credentialsStorageProvider = Provider(
-  (ref) => SecureCredentialsStorage(ref.watch(flutterSecureStorageProvider)),
+final secureStorageProvider = Provider(
+  (ref) => SecureStorage(ref.watch(flutterSecureStorageProvider)),
+);
+
+final configNotifierProvider =
+    StateNotifierProvider<ConfigNotifier, ConfigState>(
+  (ref) => ConfigNotifier(),
 );

@@ -1,21 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:split_helper/core/application/config_notifier.dart';
+import 'package:split_helper/core/cross/providers.dart';
 import 'package:split_helper/core/presentation/routes/app_router.dart';
 import 'package:split_helper/features/auth/application/auth_notifier.dart';
 import 'package:split_helper/features/auth/cross/providers.dart';
 
 final initializationProvider = FutureProvider((ref) async {});
 
-class SplitHelper extends HookConsumerWidget {
-  final ThemeData theme;
-  final _appRouter = AppRouter();
+class SplitHelper extends StatefulHookConsumerWidget {
+  const SplitHelper({
+    required this.theme,
+    super.key,
+  });
 
-  SplitHelper({super.key, required this.theme});
+  final ThemeData theme;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _SplitHelperState();
+  }
+}
+
+class _SplitHelperState extends ConsumerState<SplitHelper> {
+  final _appRouter = AppRouter();
+  bool? authenticated;
+
+  @override
+  Widget build(BuildContext context) {
     final authNotifier = ref.read(authNotifierProvider.notifier);
-    ref.listen<AuthState>(authNotifierProvider, (ctx, state) {
+    final configNotifier = ref.read(configNotifierProvider.notifier);
+    // TODO Handle getConfig failure (when ConfigState.failure())
+    ref.listen<ConfigState>(configNotifierProvider, (_, state) {
+      state.whenOrNull(
+        initialized: (_, __) async {
+          await authNotifier.checkAndUpdateStatus();
+        },
+      );
+    });
+    ref.listen<AuthState>(authNotifierProvider, (_, state) {
       state.maybeMap(
         orElse: () {},
         authenticated: (_) {
@@ -28,9 +51,9 @@ class SplitHelper extends HookConsumerWidget {
     });
 
     return FutureBuilder(
-      future: authNotifier.checkAndUpdateStatus(),
+      future: configNotifier.initializeConfig(),
       builder: (context, _) => MaterialApp.router(
-        theme: theme,
+        theme: widget.theme,
         routerConfig: _appRouter.config(),
         debugShowCheckedModeBanner: false,
       ),

@@ -19,13 +19,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier(this._authenticator) : super(const AuthState.initial());
 
   Future<void> checkAndUpdateStatus() async {
-    state = (await _authenticator.isSignedIn())
+    final isSignedIn = await _authenticator.isSignedIn();
+    state = isSignedIn
         ? const AuthState.authenticated()
         : const AuthState.unauthenticated();
   }
 
-  Future<void> signIn(AuthUriCallback authCallback) async {
-    final grant = _authenticator.getCodeGrant();
+  Future<void> signIn(
+    String key,
+    String secret,
+    AuthUriCallback authCallback,
+  ) async {
+    final grant = _authenticator.getCodeGrant(key, secret);
     final redirectUrl = await authCallback(_authenticator.getAuthURL(grant));
     final failureOrSuccess = await _authenticator.handleAuthResponse(
       grant,

@@ -1,25 +1,25 @@
 import 'package:dartz/dartz.dart';
 import 'package:oauth2/oauth2.dart';
+import 'package:split_helper/core/infra/storage.dart';
 import 'package:split_helper/features/auth/domain/auth_failure.dart';
-import 'package:split_helper/features/auth/infra/credentials_storage/credentials_storage.dart';
 
 class SplitwiseAuthenticator {
+  static final authEndpoint =
+      Uri.parse('https://secure.splitwise.com/oauth/authorize');
+  static final tokenEndpoint =
+      Uri.parse('https://secure.splitwise.com/oauth/token');
+  static final redirectUrl = Uri.parse('http://localhost:8080/oauth2/callback');
 
-  final CredentialsStorage _credentialsStorage;
+  final SecureStorage _storage;
 
-  SplitwiseAuthenticator(this._credentialsStorage);
+  SplitwiseAuthenticator(this._storage);
 
   Future<Credentials?> getSignedInCredentials() async {
     try {
-      final storedCredentials = await _credentialsStorage.read();
-      if (storedCredentials != null) {
-        if (storedCredentials.canRefresh && storedCredentials.isExpired) {
-          final failureOrCredentials = await refresh(storedCredentials);
-          return failureOrCredentials.fold(
-            (failure) => null,
-            (credentials) => credentials,
-          );
-        }
+      final storedCredentialsJson =
+          await _storage.read(SecureStorage.authCredentialsKey);
+      if (storedCredentialsJson != null) {
+        final storedCredentials = Credentials.fromJson(storedCredentialsJson);
         return storedCredentials;
       }
     } catch (_) {}
@@ -29,13 +29,15 @@ class SplitwiseAuthenticator {
   Future<bool> isSignedIn() =>
       getSignedInCredentials().then((credentials) => credentials != null);
 
-  AuthorizationCodeGrant getCodeGrant() => AuthorizationCodeGrant(
-        consumerKey,
-        authEndpoint,
-        tokenEndpoint,
-        secret: consumerSecret,
-        basicAuth: false,
-      );
+  AuthorizationCodeGrant getCodeGrant(String key, String secret) {
+    return AuthorizationCodeGrant(
+      key,
+      authEndpoint,
+      tokenEndpoint,
+      secret: secret,
+      basicAuth: false,
+    );
+  }
 
   Uri getAuthURL(AuthorizationCodeGrant grant) =>
       grant.getAuthorizationUrl(redirectUrl);
@@ -47,7 +49,10 @@ class SplitwiseAuthenticator {
     try {
       final credentials =
           (await grant.handleAuthorizationResponse(queryParams)).credentials;
-      await _credentialsStorage.save(credentials);
+      await _storage.save(
+        SecureStorage.authCredentialsKey,
+        credentials.toJson(),
+      );
       return right(unit);
     } catch (e) {
       return left(AuthFailure.general('$e'));
@@ -56,23 +61,8 @@ class SplitwiseAuthenticator {
 
   Future<Either<AuthFailure, Unit>> signOut() async {
     try {
-      await _credentialsStorage.clear();
+      await _storage.clear();
       return right(unit);
-    } catch (e) {
-      return left(AuthFailure.general('$e'));
-    }
-  }
-
-  Future<Either<AuthFailure, Credentials>> refresh(
-    Credentials credentials,
-  ) async {
-    try {
-      final freshCredentials = await credentials.refresh(
-        identifier: consumerKey,
-        secret: consumerSecret,
-      );
-      await _credentialsStorage.save(freshCredentials);
-      return right(freshCredentials);
     } catch (e) {
       return left(AuthFailure.general('$e'));
     }

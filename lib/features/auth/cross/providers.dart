@@ -4,7 +4,7 @@ import 'package:split_helper/features/auth/application/auth_notifier.dart';
 import 'package:split_helper/features/auth/infra/splitwise_authenticator.dart';
 
 final splitwiseAuthenticatorProvider = Provider(
-  (ref) => SplitwiseAuthenticator(ref.watch(credentialsStorageProvider)),
+  (ref) => SplitwiseAuthenticator(ref.watch(secureStorageProvider)),
 );
 
 final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>(
