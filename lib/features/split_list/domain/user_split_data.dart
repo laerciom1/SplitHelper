@@ -1,13 +1,13 @@
 class UserSplitData {
   final double owedShare;
-  int? userId;
-  double? paidShare;
+  final int userId;
+  final double paidShare;
   double? balance;
 
   UserSplitData({
     required this.owedShare,
-    this.userId,
-    this.paidShare,
+    required this.userId,
+    required this.paidShare,
     this.balance,
   });
 }

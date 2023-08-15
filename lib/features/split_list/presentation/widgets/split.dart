@@ -92,7 +92,7 @@ class Date extends StatelessWidget {
     return SizedBox(
       height: 64,
       width: 36,
-      child: Container(
+      child: ColoredBox(
         color: Theme.of(context).splashColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

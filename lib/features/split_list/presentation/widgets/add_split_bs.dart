@@ -141,11 +141,10 @@ class _AddSplitBSState extends State<AddSplitBS> {
                                     final match =
                                         pattern.hasMatch(newValueText);
                                     if (match) {
-                                      newValue = newValue.copyWith(
+                                      return newValue = newValue.copyWith(
                                         text:
                                             newValue.text.replaceAll(',', '.'),
                                       );
-                                      return newValue;
                                     }
                                     return oldValue;
                                   }),

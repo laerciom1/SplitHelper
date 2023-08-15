@@ -15,6 +15,7 @@ String categoryToJson(Category data) => json.encode(data.toJson());
 @freezed
 class Category with _$Category {
   const factory Category({
+    @JsonKey(name: "id") String? id,
     @JsonKey(name: "prefix") String? prefix,
     @JsonKey(name: "imageUrl") String? imageUrl,
   }) = _Category;

@@ -115,7 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ..._settings!.categories!.values
                     .map((category) => getCategoryCard(category)),
                 GestureDetector(
-                  onTap: onTapAddCategory,
+                  onTap: () {/* onTapAddCategory */},
                   child: const Card(
                     elevation: 4,
                     clipBehavior: Clip.hardEdge,
@@ -137,15 +137,15 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  onTapApply() {
-    // TODO Apply settings
-    Navigator.of(context).pop();
-  }
+  // onTapApply() {
+  //   // TODO Apply settings
+  //   Navigator.of(context).pop();
+  // }
 
-  onTapAddCategory() {
-    // TODO Make "Add Category" flow
-    Navigator.of(context).pop();
-  }
+  // onTapAddCategory() {
+  //   // TODO Make "Add Category" flow
+  //   Navigator.of(context).pop();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +158,7 @@ class _SettingsPageState extends State<SettingsPage> {
           vertical: 8,
         ),
         child: ElevatedButton(
-          onPressed: onTapApply,
+          onPressed: () {/* onTapApply */},
           child: const Text('Apply'),
         ),
       ),

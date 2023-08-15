@@ -50,7 +50,6 @@ class AddSplitFAB extends StatelessWidget {
       children: [
         ...getCategoriesDialButtons(context),
       ],
-      childPadding: const EdgeInsets.all(0),
       childMargin: const EdgeInsets.all(4),
       spaceBetweenChildren: 8,
       spacing: 4,

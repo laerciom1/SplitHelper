@@ -30,47 +30,54 @@ class SplitsNotifier extends StateNotifier<SplitsState> {
       if (curr.deletedAt == null) {
         final categoryId = curr.category!.id!;
         final category = settings.categories!['$categoryId']!;
-        accu.add(SplitData.fromExpense(
-          expense: curr,
-          imageUrl: category.imageUrl!,
-          prefix: category.prefix!,
-        ));
+        accu.add(
+          SplitData.fromExpense(
+            expense: curr,
+            imageUrl: category.imageUrl!,
+            prefix: category.prefix!,
+          ),
+        );
       }
       return accu;
     }).toList();
     state = SplitsState.initialized(splits: splits);
   }
 
-  /*
-    {
-      "cost": "100",
-      "description": "TEST",
-      "group_id": 001122,
-      "date": "2023-08-02T15:00:00Z",
-      "currency_code": "BRL",
-      "category_id": 13,
-      "users__0__user_id": 123,
-      "users__0__paid_share": "100",
-      "users__0__owed_share": "85",
-      "users__1__user_id": 321,
-      "users__1__paid_share": "0",
-      "users__1__owed_share": "15"
-    }
-  */
   Future<void> save({
     required double cost,
     required String description,
     required Category category,
     required int shareConfig,
-    required int groupId, // Firebase
-    required List<UserSplitData> shares, // Id do Firebase e Valores do Input
-    // DateTime date, // NOW
-    // String currencyCode, // BRL
+    required Settings settings,
+    required int currentUserId,
   }) async {
-    return;
-  }
-
-  Future<void> updateSplits() async {
-    return;
+    state = const SplitsState.loading();
+    final user1OwedShare = cost * (shareConfig / 100);
+    final user2OwedShare = cost - user1OwedShare;
+    final user1SplitData = UserSplitData(
+      userId: currentUserId,
+      owedShare: user1OwedShare,
+      paidShare: cost,
+      balance: cost - user1OwedShare,
+    );
+    final user2SplitData = UserSplitData(
+      userId: settings.splitUsers!['${settings.selectedSplitUser}']!,
+      owedShare: user2OwedShare,
+      paidShare: 0,
+      balance: -user2OwedShare,
+    );
+    final groupId = settings.groups!['${settings.selectedGroup}']!;
+    final shares = [user1SplitData, user2SplitData];
+    await _splitwiseRepository.addSplit(
+      cost: cost,
+      description: description,
+      category: category,
+      shareConfig: shareConfig,
+      settings: settings,
+      currentUserId: currentUserId,
+      groupId: groupId,
+      shares: shares,
+    );
+    await getSplits(settings);
   }
 }

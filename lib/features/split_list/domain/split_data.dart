@@ -32,7 +32,7 @@ class SplitData {
         .map(
           (elem) => UserSplitData(
             owedShare: double.parse(elem.owedShare!),
-            userId: elem.userId,
+            userId: elem.userId!,
             paidShare: double.parse(elem.paidShare!),
             balance: double.parse(elem.netBalance!),
           ),
