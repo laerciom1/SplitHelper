@@ -16,10 +16,12 @@ String settingsToJson(Settings data) => json.encode(data.toJson());
 @freezed
 class Settings with _$Settings {
   const factory Settings({
-    @JsonKey(name: "categories") List<Category>? categories,
+    @JsonKey(name: "categories") Map<String, Category>? categories,
     @Default(0) @JsonKey(name: "shareConfig") int shareConfig,
     @JsonKey(name: "groups") Map<String, int>? groups,
     @JsonKey(name: "splitUsers") Map<String, int>? splitUsers,
+    @JsonKey(name: "selectedGroup") String? selectedGroup,
+    @JsonKey(name: "selectedSplitUser") String? selectedSplitUser,
   }) = _Settings;
 
   factory Settings.fromJson(Map<String, dynamic> json) =>

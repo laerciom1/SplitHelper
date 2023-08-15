@@ -23,7 +23,7 @@ class Split extends StatelessWidget {
               ),
               Expanded(
                 child: Date(
-                  date: DateTime.parse(split.date),
+                  date: split.date,
                 ),
               ),
               Expanded(

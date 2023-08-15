@@ -1,6 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:split_helper/core/domain/entities/category.dart';
+import 'package:split_helper/core/domain/entities/settings.dart';
+import 'package:split_helper/core/infra/splitwise/splitwise_repository.dart';
+import 'package:split_helper/features/split_list/domain/split_data.dart';
 import 'package:split_helper/features/split_list/domain/user_split_data.dart';
 
 part 'splits_notifier.freezed.dart';
@@ -10,16 +13,32 @@ class SplitsState with _$SplitsState {
   const SplitsState._();
   const factory SplitsState.empty() = _Empty;
   const factory SplitsState.initialized({
-    required String consumerKey,
-    required String consumerSecret,
+    required List<SplitData> splits,
   }) = _SplitsState;
+  const factory SplitsState.loading() = _Loading;
 }
 
 class SplitsNotifier extends StateNotifier<SplitsState> {
-  SplitsNotifier() : super(const SplitsState.empty());
+  final SplitwiseRepository _splitwiseRepository;
+  SplitsNotifier(this._splitwiseRepository) : super(const SplitsState.empty());
 
-  Future<void> getSplits() async {
-    return;
+  Future<void> getSplits(Settings settings) async {
+    state = const SplitsState.loading();
+    final selectedGroudId = settings.groups!['${settings.selectedGroup}']!;
+    final expenses = await _splitwiseRepository.getExpenses(selectedGroudId);
+    final splits = expenses.fold(<SplitData>[], (accu, curr) {
+      if (curr.deletedAt == null) {
+        final categoryId = curr.category!.id!;
+        final category = settings.categories!['$categoryId']!;
+        accu.add(SplitData.fromExpense(
+          expense: curr,
+          imageUrl: category.imageUrl!,
+          prefix: category.prefix!,
+        ));
+      }
+      return accu;
+    }).toList();
+    state = SplitsState.initialized(splits: splits);
   }
 
   /*

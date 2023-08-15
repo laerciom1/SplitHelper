@@ -112,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
               shrinkWrap: true,
               crossAxisCount: 2,
               children: [
-                ..._settings!.categories!
+                ..._settings!.categories!.values
                     .map((category) => getCategoryCard(category)),
                 GestureDetector(
                   onTap: onTapAddCategory,

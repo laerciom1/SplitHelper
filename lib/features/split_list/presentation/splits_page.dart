@@ -1,47 +1,47 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:split_helper/core/application/session_notifier.dart';
+import 'package:split_helper/core/cross/providers.dart';
 import 'package:split_helper/core/domain/entities/category.dart';
 import 'package:split_helper/core/domain/entities/settings.dart';
 import 'package:split_helper/core/presentation/widgets/page_wrapper.dart';
+import 'package:split_helper/features/split_list/application/splits_notifier.dart';
+import 'package:split_helper/features/split_list/cross/providers.dart';
 import 'package:split_helper/features/split_list/domain/split_data.dart';
 import 'package:split_helper/features/split_list/presentation/widgets/add_split_bs.dart';
 import 'package:split_helper/features/split_list/presentation/widgets/add_split_fab.dart';
 import 'package:split_helper/features/split_list/presentation/widgets/split.dart';
 
 @RoutePage()
-class SplitsPage extends StatefulWidget {
+class SplitsPage extends StatefulHookConsumerWidget {
   const SplitsPage({super.key});
   @override
-  State<SplitsPage> createState() => _SplitsPageState();
+  ConsumerState<SplitsPage> createState() => _SplitsPageState();
 }
 
-class _SplitsPageState extends State<SplitsPage> {
-  late final GlobalKey<ScaffoldState> _scaffoldKey;
+class _SplitsPageState extends ConsumerState<SplitsPage> {
+  List<SplitData> _splits = [];
   Settings? _settings;
   int shareConfig = 0;
   bool _isLoading = false;
 
   @override
   void initState() {
-    _scaffoldKey = GlobalKey();
-    // IUserPreferencesService().get().listen((event) {
-    //   setState(() {
-    //     _settings = event as Settings;
-    //     if (_settings != null) {
-    //       shareConfig = _settings!.shareConfig;
-    //     }
-    //   });
-    // });
     super.initState();
+    ref
+        .read(sessionNotifierProvider.notifier)
+        .initializeSession()
+        .then((state) {
+      state.whenOrNull(
+        initialized: (currentUserId, currentSetting) {
+          ref.read(splitsNotifierProvider.notifier).getSplits(currentSetting);
+        },
+      );
+    });
   }
 
-  @override
-  void dispose() {
-    _scaffoldKey.currentState?.dispose();
-    super.dispose();
-  }
-
-  onAddSplit(
+  Future<void> onAddSplit(
     Category category,
     String description,
     double cost,
@@ -61,7 +61,7 @@ class _SplitsPageState extends State<SplitsPage> {
     });
   }
 
-  onSelectCategory(Category category) {
+  void onSelectCategory(Category category) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -77,69 +77,73 @@ class _SplitsPageState extends State<SplitsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final splitsNotifier = ref.watch(splitsNotifierProvider.notifier);
+    final sessionState = ref.read(sessionNotifierProvider);
+    final currSettings =
+        sessionState.whenOrNull(initialized: (_, currSettings) => currSettings);
+
     return PageWrapper(
-      showAppBar: true,
-      floatingActionButton: _settings != null
-          ? AddSplitFAB(
-              settings: _settings!,
-              onSelectCategory: onSelectCategory,
-            )
-          : null,
-      child: Stack(
-        children: [
-          RefreshIndicator(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: StreamBuilder<List<SplitData>>(
-                      // stream: ISplitsService().getSplits(),
-                      builder: (ctx, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: Theme.of(context).indicatorColor,
+        showAppBar: true,
+        floatingActionButton: _settings != null
+            ? AddSplitFAB(
+                settings: _settings!,
+                onSelectCategory: onSelectCategory,
+              )
+            : null,
+        child: StreamBuilder(
+          stream: splitsNotifier.stream,
+          initialData: const SplitsState.loading(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return snapshot.data!.when(
+                empty: () {
+                  return const Text('empty');
+                },
+                initialized: (splits) {
+                  return RefreshIndicator(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: splits.length,
+                              itemBuilder: (ctx, i) => Split(
+                                key: ValueKey(splits[i].id),
+                                split: splits[i],
+                              ),
                             ),
-                          );
-                        }
-                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(
-                            child: Text('Sem dados...'),
-                          );
-                        }
-                        final splits = snapshot.data!;
-                        return ListView.builder(
-                          itemCount: splits.length,
-                          itemBuilder: (ctx, i) => Split(
-                            key: ValueKey(splits[i].id),
-                            split: splits[i],
-                          ),
-                        );
-                      },
+                          )
+                        ],
+                      ),
                     ),
-                  )
-                ],
-              ),
-            ),
-            onRefresh: () {
-              // return ISplitsService().updateSplits();
-              return Future(() => null);
-            },
-          ),
-          if (_isLoading)
-            Container(
+                    onRefresh: () {
+                      return splitsNotifier.getSplits(currSettings!);
+                    },
+                  );
+                },
+                loading: () {
+                  return ColoredBox(
+                    color: Colors.black54,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).indicatorColor,
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+            return ColoredBox(
               color: Colors.black54,
               child: Center(
                 child: CircularProgressIndicator(
                   color: Theme.of(context).indicatorColor,
                 ),
               ),
-            )
-        ],
-      ),
-    );
+            );
+          },
+        ));
   }
 }

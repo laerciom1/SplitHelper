@@ -17,9 +17,7 @@ class SplitHelper extends StatefulHookConsumerWidget {
   final ThemeData theme;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() {
-    return _SplitHelperState();
-  }
+  ConsumerState<ConsumerStatefulWidget> createState() => _SplitHelperState();
 }
 
 class _SplitHelperState extends ConsumerState<SplitHelper> {
@@ -33,7 +31,7 @@ class _SplitHelperState extends ConsumerState<SplitHelper> {
     // TODO Handle getConfig failure (when ConfigState.failure())
     ref.listen<ConfigState>(configNotifierProvider, (_, state) {
       state.whenOrNull(
-        initialized: (_, __) async {
+        initialized: (_) async {
           await authNotifier.checkAndUpdateStatus();
         },
       );
@@ -52,7 +50,7 @@ class _SplitHelperState extends ConsumerState<SplitHelper> {
 
     return FutureBuilder(
       future: configNotifier.initializeConfig(),
-      builder: (context, _) => MaterialApp.router(
+      builder: (_, __) => MaterialApp.router(
         theme: widget.theme,
         routerConfig: _appRouter.config(),
         debugShowCheckedModeBanner: false,

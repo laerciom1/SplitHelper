@@ -14,7 +14,7 @@ class AddSplitFAB extends StatelessWidget {
   final void Function(Category) onSelectCategory;
 
   List<SpeedDialChild> getCategoriesDialButtons(BuildContext context) =>
-      settings.categories!
+      settings.categories!.values
           .map(
             (category) => SpeedDialChild(
               backgroundColor: Colors.transparent,

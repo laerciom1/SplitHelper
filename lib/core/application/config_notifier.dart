@@ -1,6 +1,7 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:split_helper/core/infra/firebase/firebase_repository.dart';
+import 'package:split_helper/features/auth/domain/config.dart';
 
 part 'config_notifier.freezed.dart';
 
@@ -9,30 +10,26 @@ class ConfigState with _$ConfigState {
   const ConfigState._();
   const factory ConfigState.empty() = _Empty;
   const factory ConfigState.initialized({
-    required String consumerKey,
-    required String consumerSecret,
+    required Config config,
   }) = _ConfigState;
   const factory ConfigState.failure() = _Failure;
 }
 
 class ConfigNotifier extends StateNotifier<ConfigState> {
-  ConfigNotifier() : super(const ConfigState.empty());
+  final FirebaseRepository _firebaseRepository;
+  ConfigNotifier(this._firebaseRepository) : super(const ConfigState.empty());
 
   Future<void> initializeConfig() async {
     try {
-      final ref = FirebaseDatabase.instance.ref();
-      final value = (await ref.child('_splitwiseConfig').get()).value!
-          as Map<Object?, Object?>;
-      state = ConfigState.initialized(
-        consumerKey: value['consumerKey']! as String,
-        consumerSecret: value['consumerSecret']! as String,
-      );
+      final config = await _firebaseRepository.getConfig();
+      state = ConfigState.initialized(config: config);
     } catch (_) {
       state = const ConfigState.failure();
     }
   }
 
-  String? get consumerKey => state.whenOrNull(initialized: (key, _) => key);
+  String? get consumerKey =>
+      state.whenOrNull(initialized: (config) => config.consumerKey);
   String? get consumerSecret =>
-      state.whenOrNull(initialized: (_, secret) => secret);
+      state.whenOrNull(initialized: (config) => config.consumerSecret);
 }
