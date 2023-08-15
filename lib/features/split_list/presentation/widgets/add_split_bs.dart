@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:split_helper/oldStructureFold/core/models/settings_data.dart';
+import 'package:split_helper/core/domain/entities/category.dart';
 
 class AddSplitBS extends StatefulWidget {
   const AddSplitBS({
@@ -83,7 +83,7 @@ class _AddSplitBSState extends State<AddSplitBS> {
                           elevation: 4,
                           clipBehavior: Clip.hardEdge,
                           child: Image.network(
-                            widget.category.imageUrl,
+                            widget.category.imageUrl!,
                             fit: BoxFit.cover,
                           ),
                         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:split_helper/oldStructureFold/core/models/settings_data.dart';
+import 'package:split_helper/core/domain/entities/category.dart';
+import 'package:split_helper/core/domain/entities/settings.dart';
 
 class AddSplitFAB extends StatelessWidget {
   const AddSplitFAB({
@@ -13,7 +14,7 @@ class AddSplitFAB extends StatelessWidget {
   final void Function(Category) onSelectCategory;
 
   List<SpeedDialChild> getCategoriesDialButtons(BuildContext context) =>
-      settings.myCategories!
+      settings.categories!
           .map(
             (category) => SpeedDialChild(
               backgroundColor: Colors.transparent,
@@ -21,7 +22,7 @@ class AddSplitFAB extends StatelessWidget {
                 elevation: 4,
                 clipBehavior: Clip.hardEdge,
                 child: Image.network(
-                  category.imageUrl,
+                  category.imageUrl!,
                   fit: BoxFit.cover,
                 ),
               ),

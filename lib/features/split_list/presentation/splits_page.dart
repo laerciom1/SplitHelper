@@ -1,13 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:split_helper/core/domain/entities/category.dart';
+import 'package:split_helper/core/domain/entities/settings.dart';
 import 'package:split_helper/core/presentation/widgets/page_wrapper.dart';
+import 'package:split_helper/features/split_list/domain/split_data.dart';
 import 'package:split_helper/features/split_list/presentation/widgets/add_split_bs.dart';
 import 'package:split_helper/features/split_list/presentation/widgets/add_split_fab.dart';
 import 'package:split_helper/features/split_list/presentation/widgets/split.dart';
-import 'package:split_helper/oldStructureFold/core/models/settings_data.dart';
-import 'package:split_helper/oldStructureFold/core/models/split_data.dart';
-import 'package:split_helper/oldStructureFold/core/services/splits/splits_service_interface.dart';
-import 'package:split_helper/oldStructureFold/core/services/user_preferences/user_preferences_service_interface.dart';
 
 @RoutePage()
 class SplitsPage extends StatefulWidget {
@@ -25,14 +24,14 @@ class _SplitsPageState extends State<SplitsPage> {
   @override
   void initState() {
     _scaffoldKey = GlobalKey();
-    IUserPreferencesService().get().listen((event) {
-      setState(() {
-        _settings = event;
-        if (_settings != null) {
-          shareConfig = _settings!.shareConfig!;
-        }
-      });
-    });
+    // IUserPreferencesService().get().listen((event) {
+    //   setState(() {
+    //     _settings = event as Settings;
+    //     if (_settings != null) {
+    //       shareConfig = _settings!.shareConfig;
+    //     }
+    //   });
+    // });
     super.initState();
   }
 
@@ -51,12 +50,12 @@ class _SplitsPageState extends State<SplitsPage> {
     setState(() {
       _isLoading = true;
     });
-    await ISplitsService().save(
-      category: category,
-      cost: cost,
-      description: description,
-      shareConfig: shareConfig,
-    );
+    // await ISplitsService().save(
+    //   category: category,
+    //   cost: cost,
+    //   description: description,
+    //   shareConfig: shareConfig,
+    // );
     setState(() {
       _isLoading = false;
     });
@@ -96,7 +95,7 @@ class _SplitsPageState extends State<SplitsPage> {
                 children: [
                   Expanded(
                     child: StreamBuilder<List<SplitData>>(
-                      stream: ISplitsService().getSplits(),
+                      // stream: ISplitsService().getSplits(),
                       builder: (ctx, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -126,7 +125,8 @@ class _SplitsPageState extends State<SplitsPage> {
               ),
             ),
             onRefresh: () {
-              return ISplitsService().updateSplits();
+              // return ISplitsService().updateSplits();
+              return Future(() => null);
             },
           ),
           if (_isLoading)

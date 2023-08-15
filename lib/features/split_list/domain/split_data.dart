@@ -1,4 +1,5 @@
-import 'package:split_helper/oldStructureFold/core/models/settings_data.dart';
+import 'package:split_helper/core/domain/entities/category.dart';
+import 'package:split_helper/features/split_list/domain/user_split_data.dart';
 
 class SplitData {
   final int id;
@@ -15,19 +16,5 @@ class SplitData {
     required this.date,
     required this.users,
     required this.category,
-  });
-}
-
-class UserSplitData {
-  final double owedShare;
-  int? userId;
-  double? paidShare;
-  double? balance;
-
-  UserSplitData({
-    required this.owedShare,
-    this.userId,
-    this.paidShare,
-    this.balance,
   });
 }

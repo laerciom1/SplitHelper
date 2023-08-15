@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:split_helper/core/domain/entities/category.dart';
+import 'package:split_helper/core/domain/entities/settings.dart';
 import 'package:split_helper/core/presentation/widgets/page_wrapper.dart';
-import 'package:split_helper/oldStructureFold/core/models/settings_data.dart';
-import 'package:split_helper/oldStructureFold/core/services/user_preferences/user_preferences_service_interface.dart';
 
 Widget getCategoryCard(Category category) {
   return Card(
@@ -11,14 +11,14 @@ Widget getCategoryCard(Category category) {
     child: Row(
       children: [
         Image.network(
-          category.imageUrl,
+          category.imageUrl!,
           height: 64,
         ),
         Expanded(
           child: Container(
             constraints: const BoxConstraints(maxHeight: 64),
             child: Text(
-              category.prefix,
+              category.prefix!,
               textAlign: TextAlign.center,
             ),
           ),
@@ -45,11 +45,11 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     _scaffoldKey = GlobalKey();
-    IUserPreferencesService().get().listen((event) {
-      setState(() {
-        _settings = event;
-      });
-    });
+    // IUserPreferencesService().get().listen((event) {
+    //   setState(() {
+    //     _settings = event as Settings;
+    //   });
+    // });
     super.initState();
   }
 
@@ -69,15 +69,16 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               const Text('Share % Config'),
               Text(
-                '${_settings!.shareConfig}/${100 - _settings!.shareConfig!}',
+                '${_settings!.shareConfig}/${100 - _settings!.shareConfig}',
               ),
             ],
           ),
           Slider.adaptive(
-            value: _settings!.shareConfig! / 100,
+            value: _settings!.shareConfig / 100,
             onChanged: (value) {
               setState(() {
-                _settings!.shareConfig = (value * 100).toInt();
+                _settings =
+                    _settings!.copyWith(shareConfig: (value * 100).toInt());
               });
             },
           ),
@@ -111,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
               shrinkWrap: true,
               crossAxisCount: 2,
               children: [
-                ..._settings!.myCategories!
+                ..._settings!.categories!
                     .map((category) => getCategoryCard(category)),
                 GestureDetector(
                   onTap: onTapAddCategory,

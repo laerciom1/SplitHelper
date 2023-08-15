@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:split_helper/oldStructureFold/core/models/split_data.dart';
+import 'package:split_helper/features/split_list/domain/split_data.dart';
 
 class Split extends StatelessWidget {
   final SplitData split;
@@ -18,7 +18,7 @@ class Split extends StatelessWidget {
           Row(
             children: [
               Image.network(
-                split.category!.imageUrl,
+                split.category!.imageUrl!,
                 height: 64,
               ),
               Expanded(
