@@ -27,7 +27,6 @@ class _SplitHelperState extends ConsumerState<SplitHelper> {
   Widget build(BuildContext context) {
     final authNotifier = ref.read(authNotifierProvider.notifier);
     final configNotifier = ref.read(configNotifierProvider.notifier);
-    // TODO Handle getConfig failure (when ConfigState.failure())
     ref.listen<ConfigState>(configNotifierProvider, (_, state) {
       state.whenOrNull(
         initialized: (_) async {

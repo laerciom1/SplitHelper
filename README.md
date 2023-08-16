@@ -1,18 +1,19 @@
-# split_helper
+### TODOs:
 
-A new Flutter project.
+- [ ] Handle failures:
+  - [ ] Handle ConfigNotifier.initializeConfig failure
+  - [ ] Handle SessionNotifier.initializeSession failure
+  - [ ] Handle SplitsNotifier.getSplits failure
+  - [ ] Handle SplitsNotifier.save failure
+  - [ ] Global Exception Catcher
+- [ ] Filter Split list by Category
+- [ ] Filter Split list by Date (before/after some date)
+- [ ] Filter Split list by Date (specific month)
+- [ ] Filter Split list by Date (specific custom interval)
+- [ ] Load more button on Splits list
+- [ ] Edit config (Settings page)
+- [ ] Encrypt data on Firebase
+- [ ] Initial settings to unregistered users (new Users)
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-dart run build_runner build --delete-conflicting-outputs
+### To generate freezed files run:
+> `dart run build_runner build --delete-conflicting-outputs`

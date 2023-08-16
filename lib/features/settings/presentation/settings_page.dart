@@ -138,12 +138,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   // onTapApply() {
-  //   // TODO Apply settings
   //   Navigator.of(context).pop();
   // }
 
   // onTapAddCategory() {
-  //   // TODO Make "Add Category" flow
   //   Navigator.of(context).pop();
   // }
 
