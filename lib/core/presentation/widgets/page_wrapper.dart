@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:split_helper/core/cross/providers.dart';
 import 'package:split_helper/core/presentation/routes/app_router.dart';
-import 'package:split_helper/features/auth/cross/providers.dart';
 
 class PageWrapper extends HookConsumerWidget {
   final Widget child;

@@ -4,7 +4,6 @@ import 'package:split_helper/core/application/config_notifier.dart';
 import 'package:split_helper/core/cross/providers.dart';
 import 'package:split_helper/core/presentation/routes/app_router.dart';
 import 'package:split_helper/features/auth/application/auth_notifier.dart';
-import 'package:split_helper/features/auth/cross/providers.dart';
 
 final initializationProvider = FutureProvider((ref) async {});
 

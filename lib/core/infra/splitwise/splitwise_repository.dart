@@ -6,6 +6,7 @@ import 'package:split_helper/core/infra/splitwise/models/create_expense_request.
 import 'package:split_helper/core/infra/splitwise/models/get_current_user_response.dart';
 import 'package:split_helper/core/infra/splitwise/models/get_expenses_response.dart';
 import 'package:split_helper/core/infra/storage.dart';
+import 'package:split_helper/features/auth/application/auth_notifier.dart';
 import 'package:split_helper/features/split_list/domain/user_split_data.dart';
 
 const baseUrl = 'https://secure.splitwise.com/api/v3.0';
@@ -20,32 +21,27 @@ enum Endpoints {
 }
 
 class SplitwiseRepository {
-  final Dio _dio;
+  Dio? _dio;
   final SecureStorage _storage;
+  final AuthNotifier _auth;
 
-  SplitwiseRepository(this._dio, this._storage) {
-    initializeDio();
-  }
-
-  Future<void> initializeDio() async {
-    final credentialsJson =
-        await _storage.read(SecureStorage.authCredentialsKey);
-    final credentials = Credentials.fromJson(credentialsJson!);
-    _dio.options = BaseOptions(
-      headers: {'Authorization': 'Bearer ${credentials.accessToken}'},
-    );
-  }
+  SplitwiseRepository(
+    this._storage,
+    this._auth,
+  );
 
   Future<GetCurrentUserResponse> getCurrentUser() async {
+    await initializeDioInstance();
     final response =
-        await _dio.get('$baseUrl${Endpoints.getCurrentUser.value}');
+        await _dio!.get('$baseUrl${Endpoints.getCurrentUser.value}');
     return GetCurrentUserResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
   }
 
   Future<List<Expense>> getExpenses(int groupId) async {
-    final response = await _dio.get(
+    await initializeDioInstance();
+    final response = await _dio!.get(
       '$baseUrl${Endpoints.getExpenses.value}',
       queryParameters: {
         'group_id': groupId,
@@ -66,6 +62,7 @@ class SplitwiseRepository {
     required int groupId,
     required List<UserSplitData> shares,
   }) async {
+    await initializeDioInstance();
     final data = CreateExpenseRequest(
       cost: cost.toStringAsFixed(2),
       description: '${category.prefix} $description',
@@ -79,10 +76,41 @@ class SplitwiseRepository {
       users1PaidShare: shares[1].paidShare.toStringAsFixed(2),
       users1OwedShare: shares[1].owedShare.toStringAsFixed(2),
     ).toJson();
-    await _dio.post(
+    await _dio!.post(
       '$baseUrl${Endpoints.createExpense.value}',
       data: data,
     );
     return;
+  }
+
+  Future<void> initializeDioInstance() async {
+    if (_dio != null) return;
+    final credentialsJson =
+        await _storage.read(SecureStorage.authCredentialsKey);
+    final credentials = Credentials.fromJson(credentialsJson!);
+    _dio = Dio()
+      ..interceptors.clear()
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            options.headers['Authorization'] =
+                'Bearer ${credentials.accessToken}';
+            return handler.next(options);
+          },
+          onResponse: (response, handler) {
+            return handler.next(response);
+          },
+          onError: (e, handler) async {
+            if (e.response != null) {
+              if (e.response!.statusCode == 401) {
+                //catch the 401 here
+                _auth.signOut();
+              } else {
+                handler.next(e);
+              }
+            }
+          },
+        ),
+      );
   }
 }

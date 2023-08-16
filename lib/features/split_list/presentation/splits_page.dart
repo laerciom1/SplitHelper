@@ -19,21 +19,6 @@ class SplitsPage extends StatefulHookConsumerWidget {
 }
 
 class _SplitsPageState extends ConsumerState<SplitsPage> {
-  @override
-  void initState() {
-    super.initState();
-    ref
-        .read(sessionNotifierProvider.notifier)
-        .initializeSession()
-        .then((state) {
-      state.whenOrNull(
-        initialized: (currentUserId, currentSetting) {
-          ref.read(splitsNotifierProvider.notifier).getSplits(currentSetting);
-        },
-      );
-    });
-  }
-
   Future<void> onAddSplit(
     Category category,
     String description,
@@ -74,81 +59,99 @@ class _SplitsPageState extends ConsumerState<SplitsPage> {
     );
   }
 
+  Future<void> initialize() {
+    return ref
+        .read(sessionNotifierProvider.notifier)
+        .initializeSession()
+        .then((state) {
+      state.whenOrNull(
+        initialized: (currentUserId, currentSetting) {
+          ref.read(splitsNotifierProvider.notifier).getSplits(currentSetting);
+        },
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final splitsNotifier = ref.watch(splitsNotifierProvider.notifier);
-    final sessionState = ref.read(sessionNotifierProvider);
-    final currSettings =
-        sessionState.whenOrNull(initialized: (_, currSettings) => currSettings);
-
-    return PageWrapper(
-      showAppBar: true,
-      floatingActionButton: currSettings != null
-          ? AddSplitFAB(
-              settings: currSettings,
-              onSelectCategory: (category) {
-                onSelectCategory(
-                  category,
-                  currSettings.shareConfig,
-                );
-              },
-            )
-          : null,
-      child: StreamBuilder(
-        stream: splitsNotifier.stream,
-        initialData: const SplitsState.loading(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return snapshot.data!.when(
-              empty: () {
-                return const Text('empty');
-              },
-              initialized: (splits) {
-                return RefreshIndicator(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: splits.length,
-                            itemBuilder: (ctx, i) => Split(
-                              key: ValueKey(splits[i].id),
-                              split: splits[i],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  onRefresh: () {
-                    return splitsNotifier.getSplits(currSettings!);
+    return FutureBuilder(
+      future: initialize(),
+      builder: (context, _) {
+        final splitsNotifier = ref.watch(splitsNotifierProvider.notifier);
+        final sessionState = ref.read(sessionNotifierProvider);
+        final currSettings = sessionState.whenOrNull(
+          initialized: (_, currSettings) => currSettings,
+        );
+        return PageWrapper(
+          showAppBar: true,
+          floatingActionButton: currSettings != null
+              ? AddSplitFAB(
+                  settings: currSettings,
+                  onSelectCategory: (category) {
+                    onSelectCategory(
+                      category,
+                      currSettings.shareConfig,
+                    );
+                  },
+                )
+              : null,
+          child: StreamBuilder(
+            stream: splitsNotifier.stream,
+            initialData: const SplitsState.loading(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return snapshot.data!.when(
+                  empty: () {
+                    return const Text('empty');
+                  },
+                  initialized: (splits) {
+                    return RefreshIndicator(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: splits.length,
+                                itemBuilder: (ctx, i) => Split(
+                                  key: ValueKey(splits[i].id),
+                                  split: splits[i],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      onRefresh: () {
+                        return splitsNotifier.getSplits(currSettings!);
+                      },
+                    );
+                  },
+                  loading: () {
+                    return ColoredBox(
+                      color: Colors.black54,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).indicatorColor,
+                        ),
+                      ),
+                    );
                   },
                 );
-              },
-              loading: () {
-                return ColoredBox(
-                  color: Colors.black54,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: Theme.of(context).indicatorColor,
-                    ),
+              }
+              return ColoredBox(
+                color: Colors.black54,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).indicatorColor,
                   ),
-                );
-              },
-            );
-          }
-          return ColoredBox(
-            color: Colors.black54,
-            child: Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).indicatorColor,
-              ),
-            ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

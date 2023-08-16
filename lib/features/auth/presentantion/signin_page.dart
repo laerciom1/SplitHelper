@@ -6,7 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:split_helper/core/cross/providers.dart';
 import 'package:split_helper/core/presentation/routes/app_router.dart';
 import 'package:split_helper/core/presentation/widgets/page_wrapper.dart';
-import 'package:split_helper/features/auth/cross/providers.dart';
 
 @RoutePage()
 class SignInPage extends StatefulHookConsumerWidget {
