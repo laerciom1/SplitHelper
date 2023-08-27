@@ -22,6 +22,7 @@ class Settings with _$Settings {
     @JsonKey(name: "splitUsers") Map<String, int>? splitUsers,
     @JsonKey(name: "selectedGroup") String? selectedGroup,
     @JsonKey(name: "selectedSplitUser") String? selectedSplitUser,
+    @JsonKey(name: "splitUserId") int? splitUserId,
   }) = _Settings;
 
   factory Settings.fromJson(Map<String, dynamic> json) =>

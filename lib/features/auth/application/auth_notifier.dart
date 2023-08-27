@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:split_helper/core/infra/firebase/firebase_wrapper.dart';
 import 'package:split_helper/features/auth/domain/auth_failure.dart';
 import 'package:split_helper/features/auth/infra/splitwise_authenticator.dart';
 
@@ -16,10 +17,13 @@ class AuthState with _$AuthState {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final SplitwiseAuthenticator _authenticator;
-  AuthNotifier(this._authenticator) : super(const AuthState.initial());
+  final FirebaseWrapper _firebaseWrapper;
+  AuthNotifier(this._authenticator, this._firebaseWrapper)
+      : super(const AuthState.initial());
 
   Future<void> checkAndUpdateStatus() async {
-    final isSignedIn = await _authenticator.isSignedIn();
+    final isSignedIn =
+        await _authenticator.isSignedIn() && _firebaseWrapper.isSignedIn();
     state = isSignedIn
         ? const AuthState.authenticated()
         : const AuthState.unauthenticated();

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:split_helper/core/infra/firebase/firebase_repository.dart';
+import 'package:split_helper/core/infra/firebase/firebase_wrapper.dart';
 import 'package:split_helper/features/auth/domain/config.dart';
 
 part 'config_notifier.freezed.dart';
@@ -16,7 +16,7 @@ class ConfigState with _$ConfigState {
 }
 
 class ConfigNotifier extends StateNotifier<ConfigState> {
-  final FirebaseRepository _firebaseRepository;
+  final FirebaseWrapper _firebaseRepository;
   ConfigNotifier(this._firebaseRepository) : super(const ConfigState.empty());
 
   Future<void> initializeConfig() async {

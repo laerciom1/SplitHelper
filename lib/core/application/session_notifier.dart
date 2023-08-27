@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:split_helper/core/domain/entities/settings.dart';
-import 'package:split_helper/core/infra/firebase/firebase_repository.dart';
-import 'package:split_helper/core/infra/splitwise/splitwise_repository.dart';
+import 'package:split_helper/core/infra/firebase/firebase_wrapper.dart';
+// import 'package:split_helper/core/infra/splitwise/splitwise_repository.dart';
 
 part 'session_notifier.freezed.dart';
 
@@ -18,22 +18,19 @@ class SessionState with _$SessionState {
 }
 
 class SessionNotifier extends StateNotifier<SessionState> {
-  final FirebaseRepository _firebaseRepository;
-  final SplitwiseRepository _splitwiseRepository;
+  final FirebaseWrapper _firebaseRepository;
+  // final SplitwiseRepository _splitwiseRepository;
   SessionNotifier(
     this._firebaseRepository,
-    this._splitwiseRepository,
+    // this._splitwiseRepository,
   ) : super(const SessionState.empty());
 
   Future<SessionState> initializeSession() async {
     try {
-      final currentUser = await _splitwiseRepository.getCurrentUser();
-      final currentUserId = currentUser.user!.id!;
-      final currentSetting = await _firebaseRepository.getSettings(
-        userId: '$currentUserId',
-      );
+      final currentSetting = await _firebaseRepository.getSettings();
+      final currentUserId = currentSetting.splitUserId;
       return state = SessionState.initialized(
-        currentUserId: currentUserId,
+        currentUserId: currentUserId!,
         settings: currentSetting,
       );
     } catch (_) {
