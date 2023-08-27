@@ -13,7 +13,7 @@
 - [ ] Load more button on Splits list
 - [ ] Edit config (Settings page)
 - [ ] Encrypt data on Firebase
-- [ ] Initial settings to unregistered users (new Users)
+- [ ] Initial settings to new users
 
 ### To generate freezed files run:
 > `dart run build_runner build --delete-conflicting-outputs`
