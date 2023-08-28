@@ -17,3 +17,6 @@
 
 ### To generate freezed files run:
 > `dart run build_runner build --delete-conflicting-outputs`
+
+### To build an APK run:
+> `flutter build apk --no-tree-shake-icons`

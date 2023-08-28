@@ -117,7 +117,7 @@ class PageOne extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            'To begin, choose an e-mail and a passowrd',
+            'To begin, choose an e-mail and a password',
           ),
           const SizedBox(
             height: 12,
@@ -147,7 +147,7 @@ class PageOne extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: passwordController,
-                  decoration: const InputDecoration(hintText: 'Senha'),
+                  decoration: const InputDecoration(hintText: 'Password'),
                   obscureText: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
