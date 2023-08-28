@@ -36,7 +36,9 @@ class FirebaseWrapper {
   bool isSignedIn() => _auth.currentUser != null;
 
   Future<Config> getConfig() async {
-    await _auth.signInAnonymously();
+    if (_auth.currentUser == null) {
+      await _auth.signInAnonymously();
+    }
     final snapshot = await _realtimeDatabase.child('_splitwiseConfig').get();
     final map = getMap(snapshot.value!);
     return Config.fromJson(map);
